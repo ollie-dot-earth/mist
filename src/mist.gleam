@@ -645,9 +645,17 @@ pub fn websocket(
           response.new(200) |> response.set_body(Websocket)
         }
         Error(start_error) -> {
+          let msg = case start_error {
+            actor.InitTimeout -> "init timed out"
+            actor.InitFailed(reason) -> "init failed: " <> reason
+            actor.InitExited(process.Normal) -> "init exited normally"
+            actor.InitExited(process.Killed) -> "init killed"
+            // TODO:  provide reason maybe???
+            actor.InitExited(process.Abnormal(..)) -> "init exited abnormally"
+          }
           logging.log(
             logging.Error,
-            "Failed to start WebSocket process: " <> string.inspect(start_error),
+            "Failed to start WebSocket process: " <> msg,
           )
           response.new(400)
           |> response.set_body(Bytes(bytes_tree.new()))
@@ -677,11 +685,10 @@ pub fn send_binary_frame(
     Ok(binary_frame) -> {
       transport.send(connection.transport, connection.socket, binary_frame)
     }
-    Error(reason) -> {
+    Error(_reason) -> {
       logging.log(
         logging.Error,
-        "Cannot send messages from a different process than the WebSocket: "
-          <> string.inspect(reason),
+        "Cannot send messages from a different process than the WebSocket",
       )
       panic as "Exiting due to sending WebSocket message from non-owning process"
     }
@@ -701,11 +708,10 @@ pub fn send_text_frame(
     Ok(text_frame) -> {
       transport.send(connection.transport, connection.socket, text_frame)
     }
-    Error(reason) -> {
+    Error(_reason) -> {
       logging.log(
         logging.Error,
-        "Cannot send messages from a different process than the WebSocket: "
-          <> string.inspect(reason),
+        "Cannot send messages from a different process than the WebSocket",
       )
       panic as "Exiting due to sending WebSocket message from non-owning process"
     }

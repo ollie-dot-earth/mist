@@ -228,11 +228,8 @@ pub fn initialize_connection(
             }
           }
         })
-        |> result.map_error(fn(err) {
-          logging.log(
-            logging.Error,
-            "Caught error in websocket handler: " <> string.inspect(err),
-          )
+        |> result.map_error(fn(_err) {
+          logging.log(logging.Error, "Caught error in websocket handler")
         })
         |> result.lazy_unwrap(fn() {
           let _ =
@@ -341,11 +338,8 @@ fn apply_frames(
           on_close(state)
           NormalStop
         }
-        Error(reason) -> {
-          logging.log(
-            logging.Error,
-            "Caught error in websocket handler: " <> string.inspect(reason),
-          )
+        Error(_reason) -> {
+          logging.log(logging.Error, "Caught error in websocket handler")
           on_close(state)
           AbnormalStop("Crash in user websocket handler")
         }

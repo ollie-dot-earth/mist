@@ -80,11 +80,8 @@ pub fn with_func(
           Http2(http2_handler.send_hpack_context(state, context))
         })
         |> result.map_error(fn(err) {
-          logging.log(
-            logging.Debug,
-            "Error sending HTTP/2 data: " <> string.inspect(err),
-          )
-          Error(string.inspect(err))
+          logging.log(logging.Debug, "Error sending HTTP/2 data: " <> err)
+          Error(err)
         })
       }
       Packet(msg), Http1(state, self) -> {
@@ -97,10 +94,45 @@ pub fn with_func(
         |> result.map_error(fn(err) {
           case err {
             DiscardPacket -> Ok(Nil)
-            _ -> {
-              logging.log(logging.Error, string.inspect(err))
-              let _ = transport.close(conn.transport, conn.socket)
-              Error("Received invalid request")
+            http.MalformedRequest -> {
+              let msg = "Received malformed HTTP request"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.InvalidMethod -> {
+              let msg = "Received invalid HTTP method"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.InvalidPath -> {
+              let msg = "Received invalid HTTP path"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.UnknownHeader -> {
+              let msg = "Received unknown HTTP header"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.UnknownMethod -> {
+              let msg = "Received unknown HTTP method"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.InvalidBody -> {
+              let msg = "Received invalid HTTP body"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.NoHostHeader -> {
+              let msg = "Missing HTTP `host` header"
+              logging.log(logging.Warning, msg)
+              Error(msg)
+            }
+            http.InvalidHttpVersion -> {
+              let msg = "Received invalid HTTP version"
+              logging.log(logging.Warning, msg)
+              Error(msg)
             }
           }
         })
