@@ -74,10 +74,15 @@ pub fn main() {
                     mist.event(string_tree.from_string(int.to_string(value)))
                   case mist.send_event(conn, event) {
                     Ok(_) -> {
-                      logging.log(
-                        logging.Info,
-                        "Sent event: " <> string.inspect(event),
-                      )
+                      let _ = case event.event {
+                        Some(event) -> {
+                          logging.log(logging.Info, "Sent event: " <> event)
+                          Nil
+                        }
+                        _ -> {
+                          Nil
+                        }
+                      }
                       actor.continue(
                         EventState(..state, count: state.count + 1),
                       )

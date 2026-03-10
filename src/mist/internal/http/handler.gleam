@@ -69,7 +69,8 @@ fn log_and_error(
   req: Request(Connection),
   version: http.HttpVersion,
 ) -> Result(Nil, String) {
-  logging.log(logging.Error, string.inspect(error))
+  let error_string = string.inspect(error)
+  logging.log(logging.Error, error_string)
   let resp =
     response.new(500)
     |> response.set_body(
@@ -89,7 +90,7 @@ fn log_and_error(
     |> transport.send(transport, socket, _)
 
   let _ = transport.close(transport, socket)
-  Error(string.inspect(error))
+  Error(error_string)
 }
 
 fn close_or_set_timer(
@@ -164,7 +165,7 @@ fn handle_file_body(
     Error(reason) -> {
       logging.log(
         logging.Error,
-        "Failed to close file: " <> string.inspect(reason),
+        "Failed to close file: " <> file.error_to_string(reason),
       )
     }
   }

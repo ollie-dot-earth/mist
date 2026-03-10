@@ -5,7 +5,6 @@ import gleam/erlang/process.{type Selector}
 import gleam/option.{type Option, None, Some}
 import gleam/otp/actor
 import gleam/result
-import gleam/string
 import glisten.{type Socket}
 import glisten/socket/options
 import glisten/transport.{type Transport}

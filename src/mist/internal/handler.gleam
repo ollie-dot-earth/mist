@@ -4,9 +4,7 @@ import gleam/option.{type Option, Some}
 import gleam/otp/actor
 import gleam/otp/factory_supervisor as factory
 import gleam/result
-import gleam/string
 import glisten.{type Loop, Packet, User}
-import glisten/transport
 import logging
 import mist/internal/http.{
   type DecodeError, type Handler, Bytes, Chunked, Connection, DiscardPacket,

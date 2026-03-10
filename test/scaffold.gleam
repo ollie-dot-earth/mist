@@ -17,6 +17,7 @@ import gleam/set
 import gleam/string
 import glisten
 import glisten/internal/handler as glisten_handler
+import glisten/socket/options
 import glisten/tcp
 import glisten/transport.{Tcp}
 import mist
@@ -73,6 +74,7 @@ pub fn open_server(
           on_close: option.None,
           loop: convert_loop(loop_func),
           transport: Tcp,
+          active_state: options.Once,
         )
 
       let assert Ok(server) = glisten_handler.start(glisten_handler)

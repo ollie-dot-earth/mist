@@ -114,6 +114,27 @@ pub type ConnectionInfo {
   ConnectionInfo(port: Int, ip_address: IpAddress)
 }
 
+pub fn connection_info_to_string(connection_info: ConnectionInfo) -> String {
+  case connection_info.ip_address {
+    IpV6(a, b, c, d, e, f, g, h) -> {
+      let blocks =
+        [a, b, c, d, e, f, g, h]
+        |> list.map(int.to_string)
+        |> string.join(":")
+
+      "[" <> blocks <> "]:" <> int.to_string(connection_info.port)
+    }
+    IpV4(a, b, c, d) -> {
+      let blocks =
+        [a, b, c, d]
+        |> list.map(int.to_string)
+        |> string.join(".")
+
+      blocks <> ":" <> int.to_string(connection_info.port)
+    }
+  }
+}
+
 /// Tries to get the IP address and port of a connected client.
 pub fn get_connection_info(conn: Connection) -> Result(ConnectionInfo, Nil) {
   transport.peername(conn.transport, conn.socket)

@@ -12,6 +12,15 @@ pub type FileError {
   UnknownFileError
 }
 
+pub fn error_to_string(error: FileError) -> String {
+  case error {
+    IsDir -> "IsDir"
+    NoAccess -> "NoAccess"
+    NoEntry -> "NoEntry"
+    UnknownFileError -> "UnknownFileError"
+  }
+}
+
 pub type SendError {
   FileErr(FileError)
   SocketErr(SocketReason)
