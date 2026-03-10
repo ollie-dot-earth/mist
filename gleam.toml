@@ -1,14 +1,11 @@
 name = "mist"
-version = "5.0.4"
+version = "6.0.0"
 
 licences = ["Apache-2.0"]
 description = "a misty Gleam web server"
 repository = { type = "github", user = "rawhat", repo = "mist" }
 target = "erlang"
 gleam = ">= 1.11.0"
-
-[erlang]
-application_start_module = "mist@internal@clock"
 
 [dependencies]
 gleam_erlang = ">= 1.0.0 and < 2.0.0"

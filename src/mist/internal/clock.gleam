@@ -1,8 +1,6 @@
-import gleam/erlang/atom
-import gleam/erlang/process.{type Pid}
+import gleam/erlang/process
 import gleam/int
 import gleam/otp/actor
-import gleam/result
 import gleam/string
 import logging
 
@@ -25,7 +23,7 @@ pub type EtsOpts {
   ReadConcurrency(Bool)
 }
 
-pub fn start(_type, _args) -> Result(Pid, actor.StartError) {
+pub fn start() -> actor.StartResult(process.Subject(ClockMessage)) {
   actor.new_with_initialiser(500, fn(subject) {
     ets_new(MistClock, [Set, Protected, NamedTable, ReadConcurrency(True)])
     process.send(subject, SetTime)
@@ -45,16 +43,6 @@ pub fn start(_type, _args) -> Result(Pid, actor.StartError) {
     }
   })
   |> actor.start
-  |> result.map(fn(start) {
-    // NOTE:  This process is explicitly _not_ started with a name, so we can
-    // safely assert here.
-    let assert Ok(pid) = process.subject_owner(start.data)
-    pid
-  })
-}
-
-pub fn stop(_state) {
-  atom.create("ok")
 }
 
 pub fn get_date() -> String {

@@ -1,12 +1,14 @@
 # Changelog
 
-# Unreleased
+# v6.0.0
 
 - Rename `get_client_info` to `get_connection_info`
 - Use factory supervisor pattern
 - Rename `get_client_info` to better match record name
 - Update SSE and chunked encoding to use `actor`-ish pattern
 - Remove some `string.inspect` on errors for better logging and performance
+- Remove `application_start_module` in favor of factory supervisor child for
+clock process
 
 # v5.0.4
 
