@@ -1,5 +1,9 @@
 # Changelog
 
+# v6.0.1
+
+- Revert `clock` supervisor change to allow multiple mist servers in the same VM
+
 # v6.0.0
 
 - Rename `get_client_info` to `get_connection_info`
@@ -7,7 +11,7 @@
 - Rename `get_client_info` to better match record name
 - Update SSE and chunked encoding to use `actor`-ish pattern
 - Remove some `string.inspect` on errors for better logging and performance
-- Remove `application_start_module` in favor of factory supervisor child for
+- Remove `application_start_module` in favor of static supervisor child for
 clock process
 
 # v5.0.4
