@@ -1,5 +1,9 @@
 # Changelog
 
+# Unreleased
+
+- Properly send close frame when user handler stops its loop
+
 # v6.0.1
 
 - Revert `clock` supervisor change to allow multiple mist servers in the same VM

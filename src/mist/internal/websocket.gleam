@@ -1,4 +1,5 @@
 import exception
+import gleam/bit_array
 import gleam/dynamic/decode
 import gleam/erlang/atom
 import gleam/erlang/process.{type Selector}
@@ -209,6 +210,12 @@ pub fn initialize_connection(
             }
             NormalStop -> {
               let _ =
+                transport.send(
+                  connection.transport,
+                  connection.socket,
+                  websocket.encode_close_frame(websocket.Normal(<<>>), None),
+                )
+              let _ =
                 option.map(state.permessage_deflate, fn(contexts) {
                   compression.close(contexts.deflate)
                   compression.close(contexts.inflate)
@@ -217,6 +224,18 @@ pub fn initialize_connection(
               actor.stop()
             }
             AbnormalStop(reason) -> {
+              let _ =
+                transport.send(
+                  connection.transport,
+                  connection.socket,
+                  websocket.encode_close_frame(
+                    websocket.CustomCloseReason(
+                      4000,
+                      bit_array.from_string(reason),
+                    ),
+                    None,
+                  ),
+                )
               let _ =
                 option.map(state.permessage_deflate, fn(contexts) {
                   compression.close(contexts.deflate)
@@ -330,10 +349,25 @@ fn apply_frames(
           )
         }
         Ok(AbnormalStop(reason)) -> {
+          let _ =
+            transport.send(
+              connection.transport,
+              connection.socket,
+              websocket.encode_close_frame(
+                websocket.CustomCloseReason(4000, bit_array.from_string(reason)),
+                None,
+              ),
+            )
           on_close(state)
           AbnormalStop(reason)
         }
         Ok(NormalStop) -> {
+          let _ =
+            transport.send(
+              connection.transport,
+              connection.socket,
+              websocket.encode_close_frame(websocket.Normal(<<>>), None),
+            )
           on_close(state)
           NormalStop
         }
