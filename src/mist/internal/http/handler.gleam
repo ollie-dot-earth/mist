@@ -124,7 +124,7 @@ fn handle_file_body(
     resp
     |> response.set_body(bytes_tree.new())
     |> http.add_date_header
-    |> response.prepend_header("content-length", int.to_string(length - offset))
+    |> response.prepend_header("content-length", int.to_string(length))
 
   let resp = case http_version {
     http.Http1 -> http.connection_close(resp)

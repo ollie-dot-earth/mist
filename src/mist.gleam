@@ -196,11 +196,12 @@ pub fn send_file(
   |> file.stat
   |> result.map_error(convert_file_errors)
   |> result.map(fn(stat) {
-    File(
-      descriptor: stat.descriptor,
-      offset: offset,
-      length: option.unwrap(limit, stat.file_size),
-    )
+    let length = case limit {
+      Some(value) if value + offset > stat.file_size -> stat.file_size - offset
+      Some(value) -> value
+      None -> stat.file_size - offset
+    }
+    File(descriptor: stat.descriptor, offset: offset, length:)
   })
 }
 

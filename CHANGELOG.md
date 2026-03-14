@@ -3,6 +3,7 @@
 # Unreleased
 
 - Properly send close frame when user handler stops its loop
+- Use correct content length header when sending a file with offset
 
 # v6.0.1
 
