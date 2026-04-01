@@ -1,5 +1,9 @@
 # Changelog
 
+# Unreleased
+
+- Continue handling frames after receiving `Ping`
+
 # v6.0.2
 
 - Properly send close frame when user handler stops its loop

@@ -312,7 +312,9 @@ fn apply_frames(
       on_close(state)
       NormalStop
     }
-    [Control(PingFrame(payload)), ..], Continue(state, _selector) -> {
+    [Control(PingFrame(payload)), ..rest],
+      Continue(state, _selector) as continue
+    -> {
       transport.send(
         connection.transport,
         connection.socket,
@@ -320,7 +322,7 @@ fn apply_frames(
       )
       |> result.map(fn(_nil) {
         set_active(connection.transport, connection.socket)
-        Continue(state, None)
+        apply_frames(rest, handler, connection, continue, on_close)
       })
       |> result.lazy_unwrap(fn() {
         on_close(state)
